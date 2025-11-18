@@ -1,7 +1,7 @@
 body{
  width: 100%;
  margin: 0;
- background-color:blue;
+ background-color: #3f58be;
 
 }
 h1{
@@ -20,14 +20,7 @@ i{
     min-height: 200px;
     
 }
-.row{
-    display: flex;
-    width: 50%;
-    justify-content: space-around;
-    text-align: center;
-    background-color: rgb(203, 196, 196);
-    border-radius: 20px;
-}
+
 .input{
     flex:1;
     width: 250px;
@@ -40,6 +33,7 @@ i{
 }
 .input-btn{
    width: 100px;
+   height: 40px;
    margin-left: 10px;
    border: 0;
    font-weight: bold;
@@ -66,33 +60,30 @@ li.checked{
     text-decoration: line-through;
 }
 
-li i{
-    font-size: small;
-  
-    
-
+#list-container {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-i:hover{
-    color: rgb(147, 142, 142);
+#list-container li {
+  background-color: #f1f2f6;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
 
+#list-container li:hover {
+  background-color: #dcdde1;
 }
-.pagination{
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    justify-content: center;
-    
+
+#list-container li span {
+  font-size: 18px;
 }
-.pagination button{
-    width: 50px;
-    height: 30px;
-    border: 0;
-    margin-right: 20px;
-    border-radius: 10px;
-    background-color: aqua;
-    cursor: pointer;
-}
-.pagination button:hover{
- background-color: blueviolet;
-}
+
