@@ -5,59 +5,106 @@ document.body.before(timeStamp);
 let inputBox = document.getElementById("input-box");
 let listContainer = document.getElementById("list-container");
 let clearBtn = document.getElementById("clear");
-let allData =[];
+let buttonsDiv = document.getElementById("generate-btn");
 
-async function getTodos() {
-  let res = await fetch("https://jsonplaceholder.typicode.com/todos");
-  allData = await res.json();
+
+//Load Tasks
+async function getAllTasks() {
+  let allTasks = [];
+
+  // Get data from Local Storage
+  let localData = JSON.parse(localStorage.getItem("tasks")) || [];
+  allTasks = [...localData];
+
+  // Get data from API 
+  try {
+    let response = await fetch("https://jsonplaceholder.typicode.com/todos");
+    let apiData = await response.json();
+
+    allTasks = [...allTasks, ...apiData];
+
+  } catch (err) {
+    console.log("API Error:", err);
+  }
+    return allTasks;
+  
+  
 }
 
 
-getTodos();
 
- function getLocalTasks() {
-  let data = localStorage.getItem("myTasks");
-  return data ? JSON.parse(data) : [];
- 
+
+
+//  Create Dynamic Buttons 
+function createButtons(totalTasks) {
+  buttonsDiv.innerHTML = "";
+ let pages = Math.ceil(totalTasks / 20); 
+
+  for (let i = 1; i <= pages; i++) {
+    let btn = document.createElement("button");
+    btn.textContent = `Page ${i}`;
+    btn.dataset.page = i;
+    btn.style.color = "red";
+    btn.style.margin = "2px";
+
+    btn.addEventListener("click", () => {
+      loadTasks(i);
+      highlightActiveButton(i); 
+ });
+
+    buttonsDiv.appendChild(btn);
+  }
 }
-showTask();
 
-// show 20 title 
-function loadData(page) {
-  let start = (page - 1) * 20; 
-  let end = start + 20;        
+function highlightActiveButton(activePage) {
+  const allBtns = buttonsDiv.querySelectorAll("button");
+  allBtns.forEach(btn => {
+    btn.style.background = btn.dataset.page == activePage ? "red" : "white";
+    btn.style.color = btn.dataset.page == activePage ? "white" : "red";
+  });
+}
 
-  let sliced = allData.slice(start, end);
 
+
+async function loadTasks(pageNumber) {
+  let allTasks = await getAllTasks();
+
+  let start = (pageNumber - 1) * 20;
+  let end = start + 20;
+
+  let pageTasks = allTasks.slice(start, end);
+
+  displayTasks(pageTasks);
+  highlightActiveButton(pageNumber);
+}
+
+function displayTasks(tasks) {
   listContainer.innerHTML = "";
 
-  sliced.forEach(item => {
+  tasks.forEach(task => {
     let li = document.createElement("li");
-    li.textContent = item.title;
 
-    //checked
-    if (item.completed) {
-      li.style.background = "#d4cb67ff";
-      li.style.textDecoration = "line-through";
-    }
+    li.innerHTML = `
+      ${task.title}
+      <span>${task.completed ? "✔️" : "❌"}</span>
+    `;
 
     listContainer.appendChild(li);
   });
 }
-// fetch("https://jsonplaceholder.typicode.com/todos")
-//    .then(response => response.json())
-//   .then(data => {
 
-//     firstTwenty = data.slice(0, 20); 
-//     firstTwenty.forEach(task => {
-//       showTask(task)
-          
-//     });
-//  })
- 
+async function init() {
+  let all = await getAllTasks();
+  createButtons(all.length);
+  loadTasks(1);             
+}
+
+init();
 
 
-//ADD TASK
+
+
+// //ADD TASK
 function addTask() {
   if (inputBox.value.trim() === "") {
     alert("You Must Write Something ,Please!");
@@ -73,14 +120,14 @@ function addTask() {
   inputBox.value = "";
 }
 
-//ACTIVATE ENTER KEY
+// //ACTIVATE ENTER KEY
 inputBox.addEventListener("keyup", function (e) {
   if (e.key === "Enter") {
     addTask();
   }
 });
 
-//CLEAR ALL
+// //CLEAR ALL
 function clearAll() {
   let confirmation = confirm("Are you sure you want to clear all tasks?");
 
@@ -108,9 +155,9 @@ listContainer.addEventListener(
 );
 
 //SAVE DATA
-function saveData() {
-  localStorage.setItem("data", listContainer.innerHTML);
-}
+// function saveData() {
+//   localStorage.setItem("data", listContainer.innerHTML);
+// }
 
 // function showTask(task) {
 //   let li = document.createElement("li");
@@ -126,8 +173,8 @@ function saveData() {
 
 
 //SHOW DATA
-function showTask() {
-  listContainer.innerHTML = localStorage.getItem("data");
-}
+// function showTask() {
+//   listContainer.innerHTML = localStorage.getItem("data");
+// }
 
-showTask();
+// showTask();
