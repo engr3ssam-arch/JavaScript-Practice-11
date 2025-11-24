@@ -16,7 +16,7 @@ The app stores tasks in **Local Storage** & Get Data From **API**, so the data r
 ## 🛠️ Technologies Used
 - **HTML5**  
 - **CSS**  
-- **JavaScript )**  
+- **JavaScript**  
 
   ## 🚀 How to Use
 1. Open the project folder  
